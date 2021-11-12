@@ -18,12 +18,12 @@ TOPIC_DELAY_CONTROL = "/emb/abe/delay_control"
 TOPIC_REBOOT = "/emb/abe/reboot"
 
 
-DEFAULT_DELAY = 0  #segundos
+DEFAULT_DELAY = 0  # in seconds
 delay = DEFAULT_DELAY
 
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+# def on_connect(client, userdata, flags, rc):
+#     print("Connected with result code "+str(rc))
 
 def on_message(client, userdata, msg):
     if msg.topic == TOPIC_DELAY_CONTROL:
@@ -32,17 +32,16 @@ def on_message(client, userdata, msg):
     
     elif msg.topic == TOPIC_REBOOT:
         os.system("reboot")
-        #print("Rebooting")
 
 def getInternalData():
-    total_ram = round(psutil.virtual_memory().total/(1024**3), 2)
+    total_ram = round(psutil.virtual_memory().total/(1024**3), 3)
     ram_in_use = psutil.virtual_memory().percent
     cpu_usage = psutil.cpu_percent(5)
 
     stat = shutil.disk_usage("/")
-    total_disk_space = round(stat.total/(1024**3), 2)
-    used_disk_space = round(stat.used/(1024**3), 2)
-    free_disk_space = round(stat.free/(1024**3), 2)
+    total_disk_space = round(stat.total/(1024**3), 3)
+    used_disk_space = round(stat.used/(1024**3), 3)
+    free_disk_space = round(stat.free/(1024**3), 3)
 
     return (total_ram, ram_in_use, cpu_usage, 
             total_disk_space, used_disk_space, free_disk_space)
@@ -51,7 +50,7 @@ def getInternalData():
 def main():
     print("\nInicializando script...")
     client = mqtt.Client()
-    client.on_connect = on_connect
+    #client.on_connect = on_connect
     client.on_message = on_message
     client.connect("test.mosquitto.org", 1883, 60)
     
